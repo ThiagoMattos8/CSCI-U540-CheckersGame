@@ -40,12 +40,12 @@ public class CheckersPieceDemo extends Application {
         }
 
         // Black pieces — row 0, columns b and d
-        addPiece(board, new Piece(0, 0, 'b', 0, 0), 0, 1);
-        addPiece(board, new Piece(0, 0, 'd', 0, 0), 0, 3);
+        addPiece(board, new Piece(0, 0, 1, 0, 0), 0, 1);
+        addPiece(board, new Piece(0, 0, 3, 0, 0), 0, 3);
 
         // Red pieces — row 1, columns a and c
-        PieceView redA = addPiece(board, new Piece(1, 1, 'a', 0, 0), 1, 0);
-        PieceView redC = addPiece(board, new Piece(1, 1, 'c', 0, 0), 1, 2);
+        PieceView redA = addPiece(board, new Piece(1, 1, 0, 0, 0), 1, 0);
+        PieceView redC = addPiece(board, new Piece(1, 1, 2, 0, 0), 1, 2);
 
         // Status label
         statusLabel = new Label("Click a piece to inspect it.");

@@ -12,7 +12,7 @@ import javafx.scene.shape.Line;
  * Renders as a solid red or black circle with a white 'X' for kings.
  *
  * Usage:
- *   CheckersPiece model = new CheckersPiece(1, 2, 'c', 0, 0);
+ *   CheckersPiece model = new CheckersPiece(1, 1, 2, 0, 0);
  *   CheckersPieceView view = new CheckersPieceView(model, tileSize);
  *   pane.getChildren().add(view);
  *   view.setTranslateX(col * tileSize + tileSize / 2.0);
