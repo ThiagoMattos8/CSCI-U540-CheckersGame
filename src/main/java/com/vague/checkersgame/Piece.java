@@ -4,13 +4,11 @@ package com.vague.checkersgame;
  * Piece.java
  * Represents a single checkers piece.
  * color   : 0 = black, 1 = red
- * row     : 1-8, board row
- * column  : 'a'-'h', board column
+ * row     : 0-7, board row
+ * col     : 0-7, board column
  * isTaken : 0 = active, 1 = captured
  * isKing  : 0 = normal, 1 = king
  */
-
-// considering combining row & column into "coords", and make column a 1-8 int instead of char idkidk
 
 public class Piece {
 
