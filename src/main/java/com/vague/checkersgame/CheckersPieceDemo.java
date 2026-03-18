@@ -40,12 +40,12 @@ public class CheckersPieceDemo extends Application {
         }
 
         // Black pieces — row 0, columns b and d
-        addPiece(board, new Piece(0, 0, 1, 0, 0), 0, 1);
-        addPiece(board, new Piece(0, 0, 3, 0, 0), 0, 3);
+        PieceView blackA = addPiece(board, new Piece(0, 0, 1, 0, 0), 0, 1);
+        PieceView blackB = addPiece(board, new Piece(0, 0, 3, 0, 0), 0, 3);
 
         // Red pieces — row 1, columns a and c
         PieceView redA = addPiece(board, new Piece(1, 1, 0, 0, 0), 1, 0);
-        PieceView redC = addPiece(board, new Piece(1, 1, 2, 0, 0), 1, 2);
+        PieceView redB = addPiece(board, new Piece(1, 1, 2, 0, 0), 1, 2);
 
         // Status label
         statusLabel = new Label("Click a piece to inspect it.");
@@ -53,7 +53,7 @@ public class CheckersPieceDemo extends Application {
 
         // Promote button — promotes whichever red piece was last clicked
         PieceView[] lastSelected = {null};
-        for (PieceView v : new PieceView[]{redA, redC}) {
+        for (PieceView v : new PieceView[]{blackA, blackB, redA, redB}) {
             v.setOnMouseClicked(e -> {
                 lastSelected[0] = v;
                 statusLabel.setText(v.getModel().toString());
@@ -61,7 +61,7 @@ public class CheckersPieceDemo extends Application {
             });
         }
 
-        Button promoteBtn = new Button("👑  Promote last selected RED to King");
+        Button promoteBtn = new Button("👑  Promote last selected piece to King");
         promoteBtn.setStyle(
                 "-fx-background-color: #F4D03F; -fx-font-weight: bold; -fx-padding: 7 14;");
         promoteBtn.setOnAction(e -> {

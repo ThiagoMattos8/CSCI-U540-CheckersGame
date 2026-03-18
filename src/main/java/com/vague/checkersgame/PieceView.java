@@ -7,10 +7,8 @@ import javafx.scene.shape.Line;
 
 /**
  * PieceView.java
- *
  * JavaFX visual for a CheckersPiece.
  * Renders as a solid red or black circle with a white 'X' for kings.
- *
  * Usage:
  *   CheckersPiece model = new CheckersPiece(1, 1, 2, 0, 0);
  *   CheckersPieceView view = new CheckersPieceView(model, tileSize);
@@ -30,13 +28,13 @@ public class PieceView extends Group {
         this.model  = model;
         this.radius = tileSize * 0.40;
 
-        // --- Body ------------------------------------------------------------
+        // Body
         Circle body = new Circle(radius);
         body.setFill(model.getColor() == 1 ? Color.RED : Color.BLACK);
         body.setStroke(Color.WHITE);
         body.setStrokeWidth(1.5);
 
-        // --- White X for king ------------------------------------------------
+        // 'X' for king
         double arm = radius * 0.55;
 
         xLine1 = new Line(-arm, -arm, arm, arm);
@@ -53,7 +51,7 @@ public class PieceView extends Group {
         getChildren().addAll(body, xLine1, xLine2);
     }
 
-    /** Call after model.setIsKing() to sync the X marker. */
+    // Call after model.setIsKing() to sync the X marker.
     public void refresh() {
         boolean king = model.getIsKing() == 1;
         xLine1.setVisible(king);
