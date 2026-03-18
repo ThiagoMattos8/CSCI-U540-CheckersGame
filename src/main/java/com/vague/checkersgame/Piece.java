@@ -20,6 +20,14 @@ public class Piece {
     int isTaken;
     int isKing;
 
+    public Piece(int color, int row, int col) {
+        this.color = color;
+        this.row = row;
+        this.col = col;
+        this.isTaken = 0;
+        this.isKing = 0;
+    }
+
     public Piece(int color, int row, int col, int isTaken, int isKing) {
         this.color = color;
         this.row = row;
@@ -33,8 +41,12 @@ public class Piece {
         return this.color;
     }
 
-    public String getCoords() {
-        return "" + this.row + this.col;
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getCol() {
+        return this.col;
     }
 
     public int getIsTaken() {
@@ -52,12 +64,12 @@ public class Piece {
         }
     }
 
-    public void setCoords(int row, String column) {
-        if (row > 0 && row < 9) {
+    public void setCoords(int row, int col) {
+        if (row >= 0 && row <= 7) {
             this.row = row;
         }
-        if (column.matches("[a-h]")) {
-            this.col = column.charAt(0);
+        if (col >= 0 && row <= 7) {
+            this.col = col;
         }
     }
 
