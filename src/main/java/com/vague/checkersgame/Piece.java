@@ -16,14 +16,14 @@ public class Piece {
 
     int color;
     int row;
-    char column;
+    int col;
     int isTaken;
     int isKing;
 
-    public Piece(int color, int row, char column, int isTaken, int isKing) {
+    public Piece(int color, int row, int col, int isTaken, int isKing) {
         this.color = color;
         this.row = row;
-        this.column = column;
+        this.col = col;
         this.isTaken = isTaken;
         this. isKing = isKing;
     }
@@ -34,7 +34,7 @@ public class Piece {
     }
 
     public String getCoords() {
-        return "" + this.row + this.column;
+        return "" + this.row + this.col;
     }
 
     public int getIsTaken() {
@@ -57,7 +57,7 @@ public class Piece {
             this.row = row;
         }
         if (column.matches("[a-h]")) {
-            this.column = column.charAt(0);
+            this.col = column.charAt(0);
         }
     }
 
@@ -76,7 +76,7 @@ public class Piece {
     public String toString() {
         return String.format(
                 "CheckersPiece[color=%d, row=%d, column=%c, isTaken=%d, isKing=%d]",
-                color, row, column, isTaken, isKing
+                color, row, col, isTaken, isKing
         );
     }
 
