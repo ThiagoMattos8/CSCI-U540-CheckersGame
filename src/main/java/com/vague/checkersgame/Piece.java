@@ -39,13 +39,9 @@ public class Piece {
         return this.color;
     }
 
-    public int getRow() {
-        return this.row;
-    }
+    public int getRow() { return this.row; }
 
-    public int getCol() {
-        return this.col;
-    }
+    public int getCol() { return this.col; }
 
     public int getIsTaken() {
         return this.isTaken;
@@ -83,9 +79,10 @@ public class Piece {
         }
     }
 
+    @Override
     public String toString() {
         return String.format(
-                "CheckersPiece[color=%d, row=%d, column=%c, isTaken=%d, isKing=%d]",
+                "CheckersPiece[color=%d, row=%d, column=%d, isTaken=%d, isKing=%d]",
                 color, row, col, isTaken, isKing
         );
     }
