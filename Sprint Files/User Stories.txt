@@ -1,0 +1,64 @@
+User Stories
+
+Core Gameplay User Stories
+1. Game setup
+As a player
+I want to start a new checkers game
+So that I can begin playing immediately
+
+2. Board display
+As a player
+I want to see an 8×8 checkers board with pieces in their starting positions
+So that I know the game is set up correctly
+
+3. Piece movement
+As a player
+I want to select and move my pieces diagonally
+So that I can make legal moves during my turn
+
+4. Turn management
+As a player
+I want turns to alternate automatically
+So that each player moves in the correct order
+
+5. Capturing pieces
+As a player
+I want to jump over and capture opponent pieces
+So that I can remove their pieces according to the rules
+
+6. Forced captures
+As a player
+I want to be forced to capture when a jump is available
+So that the game follows official checkers rules
+
+7. Multiple jumps
+As a player
+I want to perform multiple jumps in a single turn when possible
+So that all valid captures are completed
+
+8. King promotion
+As a player
+I want my piece to become a king when it reaches the opposite side
+So that it can move in both directions
+
+Game State & Rules
+9. Illegal move prevention
+As a player
+I want illegal moves to be blocked
+So that the game remains fair and rule-compliant
+
+10. Win condition
+As a player
+I want the game to detect when a player has no legal moves or pieces left
+So that the winner is declared correctly
+
+UI / Quality-of-Life Stories
+11. Visual feedback
+As a player
+I want valid moves to be highlighted when I select a piece
+So that I understand my available options
+
+12. Game reset
+As a player
+I want to reset the game at any time
+So that I can start a new match easily
