@@ -18,17 +18,21 @@ public class Board {
     private static final Color  DARK  = Color.web("#B58863");
     int[][] coords=new int[size][size]; //[row][column]
 
-
     public Board(int size){
         this.size=size;
     }
-    public PieceView addPiece(int row, int col,Piece model){
+
+    public PieceView addPiece(int row, int col, Piece model){
         PieceView view = new PieceView(model, TILE);
         view.setTranslateX(col * TILE + TILE / 2.0);
         view.setTranslateY(row * TILE + TILE / 2.0);
         gameBoard.getChildren().add(view);
         return view;
     }
+
+    // remove piece
+
+
     public void displayBoard(){
         gameBoard.setPrefSize(size * TILE, size * TILE);
         for (int r = 0; r < size; r++) {

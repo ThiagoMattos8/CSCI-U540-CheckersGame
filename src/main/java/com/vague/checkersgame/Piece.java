@@ -12,13 +12,24 @@ package com.vague.checkersgame;
 
 public class Piece {
 
+    int id;
     int color;
     int row;
     int col;
     int isTaken;
     int isKing;
 
-    public Piece(int color, int row, int col) {
+    public Piece(int id, int color) {
+        this.id = id;
+        this.color = color;
+        this.row = 0;
+        this.col = 0;
+        this.isTaken = 0;
+        this.isKing = 0;
+    }
+
+    public Piece(int id, int color, int row, int col) {
+        this.id = id;
         this.color = color;
         this.row = row;
         this.col = col;
@@ -26,7 +37,8 @@ public class Piece {
         this.isKing = 0;
     }
 
-    public Piece(int color, int row, int col, int isTaken, int isKing) {
+    public Piece(int id, int color, int row, int col, int isTaken, int isKing) {
+        this.id = id;
         this.color = color;
         this.row = row;
         this.col = col;
@@ -35,6 +47,8 @@ public class Piece {
     }
 
     // getters
+    public int getId() { return this.id; }
+
     public int getColor() {
         return this.color;
     }
@@ -52,6 +66,10 @@ public class Piece {
     }
 
     // setters
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setColor(int color) {
         if (color == 1 | color == 0) {
             this.color = color;

@@ -40,12 +40,12 @@ public class CheckersPieceDemo extends Application {
         }
 
         // Black pieces — row 0, columns b and d
-        PieceView blackA = addPiece(board, new Piece(0, 0, 1, 0, 0), 0, 1);
-        PieceView blackB = addPiece(board, new Piece(0, 0, 3, 0, 0), 0, 3);
+        PieceView blackA = addPiece(board, new Piece(0, 0, 0, 1, 0, 0), 0, 1);
+        PieceView blackB = addPiece(board, new Piece(1,0, 0, 3, 0, 0), 0, 3);
 
         // Red pieces — row 1, columns a and c
-        PieceView redA = addPiece(board, new Piece(1, 1, 0, 0, 0), 1, 0);
-        PieceView redB = addPiece(board, new Piece(1, 1, 2, 0, 0), 1, 2);
+        PieceView redA = addPiece(board, new Piece(0, 1, 1, 0, 0, 0), 1, 0);
+        PieceView redB = addPiece(board, new Piece(1, 1, 1, 2, 0, 0), 1, 2);
 
         // Status label
         statusLabel = new Label("Click a piece to inspect it.");
@@ -61,7 +61,7 @@ public class CheckersPieceDemo extends Application {
             });
         }
 
-        Button promoteBtn = new Button("👑  Promote last selected piece to King");
+        Button promoteBtn = new Button("Promote last selected piece to King");
         promoteBtn.setStyle(
                 "-fx-background-color: #F4D03F; -fx-font-weight: bold; -fx-padding: 7 14;");
         promoteBtn.setOnAction(e -> {

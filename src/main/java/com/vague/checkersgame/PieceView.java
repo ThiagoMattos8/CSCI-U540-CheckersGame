@@ -16,6 +16,7 @@ import javafx.scene.shape.Line;
  *   view.setTranslateX(col * tileSize + tileSize / 2.0);
  *   view.setTranslateY(row * tileSize + tileSize / 2.0);
  */
+
 public class PieceView extends Group {
 
     private final Piece model;
