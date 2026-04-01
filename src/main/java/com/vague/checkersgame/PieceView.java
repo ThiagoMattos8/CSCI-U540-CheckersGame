@@ -19,19 +19,19 @@ import javafx.scene.shape.Line;
 
 public class PieceView extends Group {
 
-    private final Piece model;
+    private final Piece piece;
     private final double radius;
 
     private final Line xLine1;
     private final Line xLine2;
 
-    public PieceView(Piece model, double tileSize) {
-        this.model  = model;
+    public PieceView(Piece piece, double tileSize) {
+        this.piece  = piece;
         this.radius = tileSize * 0.40;
 
         // Body
         Circle body = new Circle(radius);
-        body.setFill(model.getColor() == 1 ? Color.RED : Color.BLACK);
+        body.setFill(piece.getColor() == 1 ? Color.RED : Color.BLACK);
         body.setStroke(Color.WHITE);
         body.setStrokeWidth(1.5);
 
@@ -45,7 +45,7 @@ public class PieceView extends Group {
         xLine1.setStrokeWidth(3);
         xLine2.setStrokeWidth(3);
 
-        boolean king = model.getIsKing() == 1;
+        boolean king = piece.getIsKing() == 1;
         xLine1.setVisible(king);
         xLine2.setVisible(king);
 
@@ -54,10 +54,10 @@ public class PieceView extends Group {
 
     // Call after model.setIsKing() to sync the X marker.
     public void refresh() {
-        boolean king = model.getIsKing() == 1;
+        boolean king = piece.getIsKing() == 1;
         xLine1.setVisible(king);
         xLine2.setVisible(king);
     }
 
-    public Piece getModel() { return model; }
+    public Piece getPiece() { return piece; }
 }

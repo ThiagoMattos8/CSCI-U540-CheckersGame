@@ -56,7 +56,7 @@ public class CheckersPieceDemo extends Application {
         for (PieceView v : new PieceView[]{blackA, blackB, redA, redB}) {
             v.setOnMouseClicked(e -> {
                 lastSelected[0] = v;
-                statusLabel.setText(v.getModel().toString());
+                statusLabel.setText(v.getPiece().toString());
                 e.consume();
             });
         }
@@ -66,9 +66,9 @@ public class CheckersPieceDemo extends Application {
                 "-fx-background-color: #F4D03F; -fx-font-weight: bold; -fx-padding: 7 14;");
         promoteBtn.setOnAction(e -> {
             if (lastSelected[0] != null) {
-                lastSelected[0].getModel().setIsKing(1);
+                lastSelected[0].getPiece().setIsKing(1);
                 lastSelected[0].refresh();
-                statusLabel.setText(lastSelected[0].getModel().toString());
+                statusLabel.setText(lastSelected[0].getPiece().toString());
             } else {
                 statusLabel.setText("Click a red piece first.");
             }
