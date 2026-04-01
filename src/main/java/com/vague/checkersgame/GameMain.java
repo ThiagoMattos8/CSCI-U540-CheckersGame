@@ -26,7 +26,7 @@ public class GameMain extends Application {
         board.displayBoard();
 
         //Initialize Pieces on Board
-        gameLogic.setUpInitialBoard();
+        gameLogic.setUpInitialBoard(board);
 
         //Root
         BorderPane root = new BorderPane();
