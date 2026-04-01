@@ -14,6 +14,7 @@ public class GameMain extends Application {
     //Import Board and GameLogic
     private Board board;
     private GameLogic gameLogic;
+    private Piece[][] pieces;
 
     @Override
     public void start(Stage primaryStage)
@@ -26,7 +27,7 @@ public class GameMain extends Application {
         board.displayBoard();
 
         //Initialize Pieces on Board
-        gameLogic.setUpInitialBoard(board);
+        pieces = gameLogic.createPieces(board);
 
         //Root
         BorderPane root = new BorderPane();
