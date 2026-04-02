@@ -30,8 +30,6 @@ public class Board {
         return view;
     }
 
-    // remove piece
-
 
     public void displayBoard(){
         gameBoard.setPrefSize(size * TILE, size * TILE);
