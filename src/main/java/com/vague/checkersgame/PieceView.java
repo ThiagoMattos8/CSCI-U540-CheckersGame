@@ -29,6 +29,10 @@ public class PieceView extends Group {
         this.piece  = piece;
         this.radius = tileSize * 0.40;
 
+        // Let mouse clicks pass through the piece drawing to the board square underneath.
+        // This keeps the click logic simple: the tile handles selection and movement.
+        setMouseTransparent(true);
+
         // Body
         Circle body = new Circle(radius);
         body.setFill(piece.getColor() == 1 ? Color.RED : Color.BLACK);

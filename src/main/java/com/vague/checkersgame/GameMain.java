@@ -1,52 +1,48 @@
 package com.vague.checkersgame;
 
-//Imports
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-
-//Main
 public class GameMain extends Application {
 
-    //Import Board and GameLogic
     private Board board;
     private GameLogic gameLogic;
     private Piece[][] pieces;
 
     @Override
-    public void start(Stage primaryStage)
-    {
-        //Initialize Logic
+    public void start(Stage primaryStage) {
         gameLogic = new GameLogic();
 
-        //Create Board
         board = new Board(8);
         board.displayBoard();
 
-        //Initialize Pieces on Board
+        // Create the starting pieces once when the game begins.
         pieces = gameLogic.createPieces(board);
 
-        //Root
+        // Add a click action to every square on the board.
+        // Click a piece first, then click an empty square to move it there.
+        for (int row = 0; row < board.size; row++) {
+            for (int col = 0; col < board.size; col++) {
+                final int clickedRow = row;
+                final int clickedCol = col;
+                board.setTileClickHandler(clickedRow, clickedCol,
+                        event -> gameLogic.handleTileClick(clickedRow, clickedCol, board));
+            }
+        }
+
         BorderPane root = new BorderPane();
         root.setCenter(board.gameBoard);
 
-        //Scene
         Scene scene = new Scene(root);
 
-        //Stage
         primaryStage.setTitle("Checkers Game");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    //Future Methods
-
-    //Game Launch
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(args);
     }
 }

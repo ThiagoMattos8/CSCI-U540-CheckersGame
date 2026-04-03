@@ -1,61 +1,87 @@
 package com.vague.checkersgame;
 
 public class GameLogic {
-    //Import Board and Piece
-    private Board board;
-    private Piece piece;
+    // This stores the current board state.
+    // If a square has a piece on it, that piece is saved in this array.
+    private Piece[][] pieces;
 
-    // Game Logic Functions
+    // This stores the piece the player clicked first.
+    // The next click is where that piece should move.
+    private Piece selectedPiece;
 
-    // Create pieces
-    public Piece[][] createPieces(Board board)
-    {
+    // Create the starting pieces and place them on the board.
+    public Piece[][] createPieces(Board board) {
+        pieces = new Piece[board.size][board.size];
 
-        Piece[][] pieces = new Piece[board.size][board.size];
+        int blackId = 0;
+        int redId = 0;
 
-        // creates pieces with starting location coords
-        int i=0;
-        int j=0;
-
-        for (int x = 0; x < 3; x++) { //add black pieces at top
-            for (int y = 0; y < board.size; y++)
-                if (y % 2 == 0 && x % 2 == 1) {
-                    piece = new Piece(i, 0, x, y, 0, 0);
-                    pieces[x][y] = piece;
-                    i++;
-                    board.addPiece(x, y, piece);
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < board.size; col++) {
+                if ((row + col) % 2 == 1) {
+                    Piece piece = new Piece(blackId, 0, row, col, 0, 0);
+                    pieces[row][col] = piece;
+                    blackId++;
+                    board.addPiece(row, col, piece);
                 }
-                else if (y % 2 == 1 && x % 2 == 0) {
-                    piece = new Piece(i, 0, x, y, 0, 0);
-                    pieces[x][y] = piece;
-                    i++;
-                    board.addPiece(x, y, piece);
-                }
+            }
         }
-        for (int x = board.size - 3; x < board.size; x++) { //add red pieces at bottom
-            for (int y = 0; y < board.size; y++)
-                if (y % 2 == 0 && x % 2 == 1) {
-                    piece = new Piece(j, 1, x, y, 0, 0);
-                    pieces[x][y] = piece;
-                    j++;
-                    board.addPiece(x, y, piece);
+
+        for (int row = board.size - 3; row < board.size; row++) {
+            for (int col = 0; col < board.size; col++) {
+                if ((row + col) % 2 == 1) {
+                    Piece piece = new Piece(redId, 1, row, col, 0, 0);
+                    pieces[row][col] = piece;
+                    redId++;
+                    board.addPiece(row, col, piece);
                 }
-                else if (y % 2 == 1 && x % 2 == 0) {
-                    piece = new Piece(j, 1, x, y, 0, 0);
-                    pieces[x][y] = piece;
-                    j++;
-                    board.addPiece(x, y, piece);
-                }
+            }
         }
+
         return pieces;
     }
 
+    // Simple click flow:
+    // 1. Click a piece to select it.
+    // 2. Click an empty square to move it there.
+    public void handleTileClick(int row, int col, Board board) {
+        if (pieces == null) {
+            return;
+        }
 
-    //Piece Move function
+        Piece clickedPiece = pieces[row][col];
 
-    //Jump Function
+        if (selectedPiece == null) {
+            if (clickedPiece != null) {
+                selectedPiece = clickedPiece;
+            }
+            return;
+        }
 
-    //Switch Turn function
+        // Do not move onto an occupied square.
+        // If the user clicks another piece, just switch the selection.
+        if (clickedPiece != null) {
+            selectedPiece = clickedPiece;
+            return;
+        }
 
-    //
+        moveSelectedPiece(row, col);
+        board.redrawPieces(pieces);
+    }
+
+    // This moves the same Piece object.
+    // This way the position updates instead of creating a whole new piece
+    private void moveSelectedPiece(int newRow, int newCol) {
+        if (selectedPiece == null) {
+            return;
+        }
+
+        int oldRow = selectedPiece.getRow();
+        int oldCol = selectedPiece.getCol();
+
+        pieces[oldRow][oldCol] = null;
+        selectedPiece.setCoords(newRow, newCol);
+        pieces[newRow][newCol] = selectedPiece;
+        selectedPiece = null;
+    }
 }

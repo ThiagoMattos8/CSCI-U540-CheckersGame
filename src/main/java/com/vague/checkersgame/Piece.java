@@ -43,10 +43,9 @@ public class Piece {
         this.row = row;
         this.col = col;
         this.isTaken = isTaken;
-        this. isKing = isKing;
+        this.isKing = isKing;
     }
 
-    // getters
     public int getId() { return this.id; }
 
     public int getColor() {
@@ -65,22 +64,23 @@ public class Piece {
         return this.isKing;
     }
 
-    // setters
     public void setId(int id) {
         this.id = id;
     }
 
     public void setColor(int color) {
-        if (color == 1 | color == 0) {
+        if (color == 1 || color == 0) {
             this.color = color;
         }
     }
 
+    // This is what movement uses.
+    // We keep the same Piece object and just update where it lives on the board.
     public void setCoords(int row, int col) {
         if (row >= 0 && row <= 7) {
             this.row = row;
         }
-        if (col >= 0 && row <= 7) {
+        if (col >= 0 && col <= 7) {
             this.col = col;
         }
     }
@@ -104,5 +104,4 @@ public class Piece {
                 color, row, col, isTaken, isKing
         );
     }
-
 }
