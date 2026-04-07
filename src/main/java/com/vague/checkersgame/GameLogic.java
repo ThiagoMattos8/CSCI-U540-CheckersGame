@@ -95,6 +95,11 @@ public class GameLogic {
             return;
         }
 
+        // Only allow a one-square diagonal move in the correct direction.
+        if (!isValidSimpleMove(selectedPiece, row, col)) {
+            return;
+        }
+
         moveSelectedPiece(row, col);
         board.redrawPieces(pieces);
 
@@ -102,6 +107,34 @@ public class GameLogic {
         //Switch After Moving Piece
         switchTurn();
         updateTurnLabel(board);
+    }
+
+    // A valid move is exactly 1 row diagonally and 1 column diagonally.
+    // Black moves downward. Red moves upward.
+    private boolean isValidSimpleMove(Piece piece, int newRow, int newCol) {
+        if (piece == null) {
+            return false;
+        }
+
+        int oldRow = piece.getRow();
+        int oldCol = piece.getCol();
+
+        int rowDifference = newRow - oldRow;
+        int colDifference = newCol - oldCol;
+
+        if (Math.abs(colDifference) != 1) {
+            return false;
+        }
+
+        if (piece.getColor() == 0) {
+            return rowDifference == 1;
+        }
+
+        if (piece.getColor() == 1) {
+            return rowDifference == -1;
+        }
+
+        return false;
     }
 
     //Update Turn Label
