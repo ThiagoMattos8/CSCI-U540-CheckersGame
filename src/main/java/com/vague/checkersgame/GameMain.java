@@ -2,7 +2,9 @@ package com.vague.checkersgame;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
@@ -37,12 +39,10 @@ public class GameMain extends Application {
         }
 
         BorderPane root = new BorderPane();
-        root.setCenter(board.gameBoard);
-        Scene scene = new Scene(root);
-
-        primaryStage.setTitle("Checkers Game");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        StackPane boardContainer = new StackPane();
+        Group boardGroup = new Group(board.gameBoard);
+        boardContainer.getChildren().add(boardGroup);
+        root.setCenter(boardContainer);
 
         //Current Player Label
         turnLabel = new Label("Current Player: Red");
@@ -61,6 +61,12 @@ public class GameMain extends Application {
             setupTileHandlers();
             turnLabel.setText("Current Player: Red");
         });
+
+        Scene scene = new Scene(root);
+
+        primaryStage.setTitle("Checkers Game");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     //Reset Logic
