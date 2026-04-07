@@ -57,6 +57,7 @@ public class GameLogic {
             return;
         }
 
+
         Piece clickedPiece = pieces[row][col];
 
         if (selectedPiece == null) {
@@ -69,6 +70,16 @@ public class GameLogic {
         // Do not move onto an occupied square.
         // If the user clicks another piece, just switch the selection.
         if (clickedPiece != null) {
+            selectedPiece = clickedPiece;
+            return;
+        }
+
+        // Do not move onto white square
+        else if ((row % 2 == 0) && (col % 2 == 0)) {
+            selectedPiece = clickedPiece;
+            return;
+        }
+        else if ((row % 2 == 1) && (col % 2 == 1)) {
             selectedPiece = clickedPiece;
             return;
         }
