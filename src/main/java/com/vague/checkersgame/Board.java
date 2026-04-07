@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Label;
 
 public class Board {
     int size;
@@ -13,6 +14,18 @@ public class Board {
     private static final Color DARK = Color.web("#B58863");
     int[][] coords;
     Rectangle[][] tiles;
+
+    //Player Turn label
+    //Updater and Setter
+    private Label turnLabel;
+    public void setTurnLabel(Label label) {
+        this.turnLabel = label;
+    }
+    public void updateTurnDisplay(String text) {
+        if (turnLabel != null) {
+            turnLabel.setText(text);
+        }
+    }
 
     public Board(int size) {
         this.size = size;
@@ -58,5 +71,11 @@ public class Board {
     // This lets the main game attach a click action to each square.
     public void setTileClickHandler(int row, int col, EventHandler<javafx.scene.input.MouseEvent> handler) {
         tiles[row][col].setOnMouseClicked(handler);
+    }
+
+    //For Resetting Board
+    public void clearBoard() {
+        gameBoard.getChildren().clear();
+        displayBoard(); // redraw empty grid
     }
 }

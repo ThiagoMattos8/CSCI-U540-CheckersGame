@@ -9,6 +9,14 @@ public class GameLogic {
     // The next click is where that piece should move.
     private Piece selectedPiece;
 
+    //Current Player
+    //Alternate Turns
+    //Starting Player Red
+    private int currentPlayer = 1;
+    private void switchTurn() {
+        currentPlayer = (currentPlayer == 0) ? 1 : 0;
+    }
+
     // Create the starting pieces and place them on the board.
     public Piece[][] createPieces(Board board) {
         pieces = new Piece[board.size][board.size];
@@ -67,6 +75,24 @@ public class GameLogic {
 
         moveSelectedPiece(row, col);
         board.redrawPieces(pieces);
+
+        //Player Turn Label
+        //Switch After Moving Piece
+        switchTurn();
+        updateTurnLabel(board);
+    }
+
+    //Update Turn Label
+    private void updateTurnLabel(Board board) {
+        String playerText = (currentPlayer == 0) ? "Black" : "Red";
+        board.updateTurnDisplay("Current Player: " + playerText);
+    }
+
+    //Reset Button Logic
+    public Piece[][] resetGame(Board board) {
+        selectedPiece = null;
+        currentPlayer = 1;
+        return createPieces(board);
     }
 
     // This moves the same Piece object.
