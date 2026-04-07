@@ -53,9 +53,11 @@ public class GameLogic {
     // 1. Click a piece to select it.
     // 2. Click an empty square to move it there.
     public void handleTileClick(int row, int col, Board board) {
+
         if (pieces == null) {
             return;
         }
+
 
 
         Piece clickedPiece = pieces[row][col];
@@ -64,6 +66,15 @@ public class GameLogic {
             if (clickedPiece != null) {
                 selectedPiece = clickedPiece;
             }
+            return;
+        }
+
+        if (currentPlayer == 1 && selectedPiece.getColor() == 0) {
+            selectedPiece = clickedPiece;
+            return;
+        }
+        else if (currentPlayer == 0 && selectedPiece.getColor() == 1) {
+            selectedPiece = clickedPiece;
             return;
         }
 
