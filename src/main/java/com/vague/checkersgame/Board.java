@@ -78,4 +78,7 @@ public class Board {
         gameBoard.getChildren().clear();
         displayBoard(); // redraw empty grid
     }
+    public void removePiece(Piece piece){
+        gameBoard.getChildren().remove(piece);
+    }
 }

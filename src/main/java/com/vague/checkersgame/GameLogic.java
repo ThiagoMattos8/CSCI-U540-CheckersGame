@@ -95,10 +95,15 @@ public class GameLogic {
             return;
         }
 
-        // Only allow a one-square diagonal move in the correct direction.
-        if (!isValidSimpleMove(selectedPiece, row, col)) {
+
+       /* if (!isValidJumpMove(selectedPiece,row,col)){
             return;
+        }*/
+         //Only allow a one-square diagonal move in the correct direction.
+        else if (!isValidMove(selectedPiece, row, col,board)) {
+         return;
         }
+
 
         moveSelectedPiece(row, col);
         board.redrawPieces(pieces);
@@ -111,7 +116,30 @@ public class GameLogic {
 
     // A valid move is exactly 1 row diagonally and 1 column diagonally.
     // Black moves downward. Red moves upward.
-    private boolean isValidSimpleMove(Piece piece, int newRow, int newCol) {
+  /*  private boolean isValidJumpMove(Piece piece, int newRow, int newCol) {
+        if (piece == null) {
+            return false;
+        }
+
+        int oldRow = piece.getRow();        method currently moves pieces by 2 in appropriate direciton
+        int oldCol = piece.getCol();        conflicts with isValidSimpleMove and does not allow piece movement
+
+        int rowDifference = newRow - oldRow;
+        int colDifference = newCol - oldCol;
+
+        if (Math.abs(colDifference) != 2) {
+            return false;
+        }
+        if (piece.getColor() == 0) {
+            return rowDifference == 2;
+        }
+
+        if (piece.getColor() == 1) {
+            return rowDifference == -2;
+        }
+        return false;
+    } */
+    private boolean isValidMove(Piece piece, int newRow, int newCol,Board board) {
         if (piece == null) {
             return false;
         }
@@ -123,11 +151,32 @@ public class GameLogic {
         int colDifference = newCol - oldCol;
 
         if (Math.abs(colDifference) != 1) {
-            return false;
+            if (Math.abs(colDifference)==2){
+                if (piece.getColor()==0){
+                    if (oldCol+2<= board.size&&pieces[oldRow+1][oldCol+1]!=null&&pieces[oldRow+1][oldCol+1].getColor()!=0){
+                        removePiece(oldRow+1,oldCol+1,board);
+                        return rowDifference==2;
+                    }
+                    if (oldCol-1>=0&&pieces[oldRow+1][oldCol-1]!=null&&pieces[oldRow+1][oldCol-1].getColor()!=0) {
+                        removePiece(oldRow+1,oldCol-1,board);
+                        return rowDifference==2;
+                    }
+                } else if (piece.getColor()==1) {
+                    if (oldCol+2<= board.size&&pieces[oldRow-1][oldCol+1]!=null&&pieces[oldRow-1][oldCol+1].getColor()!=1) {
+                        removePiece(oldRow-1,oldCol+1,board);
+                        return rowDifference==-2;
+                    } if (oldCol-1>=0&&pieces[oldRow-1][oldCol-1]!=null&&pieces[oldRow-1][oldCol-1].getColor()!=1) {
+                        removePiece(oldRow-1,oldCol-1,board);
+                        return rowDifference==-2;
+                    }
+                }
+            }else {
+            return false;}
+
         }
 
         if (piece.getColor() == 0) {
-            return rowDifference == 1;
+                return rowDifference == 1;
         }
 
         if (piece.getColor() == 1) {
@@ -164,5 +213,10 @@ public class GameLogic {
         selectedPiece.setCoords(newRow, newCol);
         pieces[newRow][newCol] = selectedPiece;
         selectedPiece = null;
+    }
+    private void removePiece(int row,int col, Board board){
+        board.removePiece(pieces[row][col]);
+        pieces[row][col]=null;
+
     }
 }
