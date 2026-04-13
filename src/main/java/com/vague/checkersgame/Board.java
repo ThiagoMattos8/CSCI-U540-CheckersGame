@@ -1,10 +1,13 @@
 package com.vague.checkersgame;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.control.Label;
+import javafx.scene.shape.StrokeType;
+
+import java.util.List;
 
 public class Board {
     int size;
@@ -14,6 +17,8 @@ public class Board {
     private static final Color DARK = Color.web("#B58863");
     int[][] coords;
     Rectangle[][] tiles;
+    private static final Color SELECTABLE_HIGHLIGHT = Color.rgb(255, 215, 0, 0.85);
+    private static final Color DESTINATION_HIGHLIGHT = Color.rgb(46, 204, 113, 0.9);
 
     //Player Turn label
     //Updater and Setter
@@ -48,6 +53,10 @@ public class Board {
             for (int c = 0; c < size; c++) {
                 Rectangle tile = new Rectangle(c * TILE, r * TILE, TILE, TILE);
                 tile.setFill((r + c) % 2 == 0 ? LIGHT : DARK);
+                // Keep a constant inside stroke so highlighting does not change layout bounds.
+                tile.setStroke(Color.TRANSPARENT);
+                tile.setStrokeWidth(4);
+                tile.setStrokeType(StrokeType.INSIDE);
                 tiles[r][c] = tile;
                 gameBoard.getChildren().add(tile);
             }
@@ -78,7 +87,28 @@ public class Board {
         gameBoard.getChildren().clear();
         displayBoard(); // redraw empty grid
     }
-    public void removePiece(Piece piece){
-        gameBoard.getChildren().remove(piece);
+
+    public void clearHighlights() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                tiles[row][col].setStroke(Color.TRANSPARENT);
+            }
+        }
+    }
+
+    // Highlight squares that contain pieces the current player may act with.
+    public void highlightSelectablePieces(List<int[]> positions) {
+        for (int[] position : positions) {
+            Rectangle tile = tiles[position[0]][position[1]];
+            tile.setStroke(SELECTABLE_HIGHLIGHT);
+        }
+    }
+
+    // Highlight squares a selected piece may move or jump to.
+    public void highlightDestinationSquares(List<int[]> positions) {
+        for (int[] position : positions) {
+            Rectangle tile = tiles[position[0]][position[1]];
+            tile.setStroke(DESTINATION_HIGHLIGHT);
+        }
     }
 }

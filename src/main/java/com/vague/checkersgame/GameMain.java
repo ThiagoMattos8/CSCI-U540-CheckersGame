@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
@@ -17,6 +18,8 @@ public class GameMain extends Application {
     private Board board;
     private GameLogic gameLogic;
     private Piece[][] pieces;
+    private BorderPane root;
+    private StackPane boardContainer;
 
     private Label turnLabel;
     private Label statusLabel;
@@ -33,9 +36,9 @@ public class GameMain extends Application {
 
         pieces = gameLogic.createPieces(board);
 
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
 
-        StackPane boardContainer = new StackPane();
+        boardContainer = new StackPane();
         Group boardGroup = new Group(board.gameBoard);
         boardContainer.getChildren().add(boardGroup);
         root.setCenter(boardContainer);
@@ -91,8 +94,9 @@ public class GameMain extends Application {
         // Forfeit
         forfeitButton.setOnAction(e -> {
             gameOver = true;
+            String forfeitingPlayer = gameLogic.getCurrentPlayerName();
             statusLabel.setText("Status: Match Forfeited");
-            turnLabel.setText("Game Over");
+            showEndScreen(forfeitingPlayer + " forfeits.");
         });
 
         Scene scene = new Scene(root);
@@ -100,6 +104,8 @@ public class GameMain extends Application {
         primaryStage.setTitle("Checkers Game");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        updateHighlights();
     }
 
     private void startNewGame() {
@@ -107,11 +113,14 @@ public class GameMain extends Application {
 
         board.clearBoard();
         pieces = gameLogic.resetGame(board);
+        root.setCenter(boardContainer);
 
         setupTileHandlers();
 
         turnLabel.setText("Current Player: Red");
+        statusLabel.setText("Status: Game Ready");
         moveCounterLabel.setText("Moves: 0");
+        updateHighlights();
     }
 
     private void setupTileHandlers() {
@@ -128,9 +137,44 @@ public class GameMain extends Application {
                     gameLogic.handleTileClick(r, c, board);
                     moveCounterLabel.setText("Moves: " + gameLogic.getMoveCount());
                     statusLabel.setText("Status: In Progress");
+                    updateHighlights();
+
+                    if (gameLogic.isGameOver()) {
+                        gameOver = true;
+                        statusLabel.setText("Status: Match Finished");
+                        showEndScreen(gameLogic.getGameOverMessage());
+                    }
                 });
             }
         }
+    }
+
+    private void showEndScreen(String message) {
+        Label endLabel = new Label(message);
+        endLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+
+        Button newGameButton = new Button("New Game");
+        newGameButton.setStyle("-fx-background-color: #F4D03F; -fx-font-weight: bold; -fx-padding: 7 14;");
+        newGameButton.setOnAction(event -> startNewGame());
+
+        VBox endScreen = new VBox(16, endLabel, newGameButton);
+        endScreen.setAlignment(Pos.CENTER);
+        endScreen.setPadding(new Insets(20));
+
+        turnLabel.setText("Game Over");
+        root.setCenter(endScreen);
+    }
+
+    private void updateHighlights() {
+        board.clearHighlights();
+
+        var destinationSquares = gameLogic.getSelectedPieceDestinations(board);
+        if (!destinationSquares.isEmpty()) {
+            board.highlightDestinationSquares(destinationSquares);
+            return;
+        }
+
+        board.highlightSelectablePieces(gameLogic.getSelectablePiecePositions(board));
     }
 
     public static void main(String[] args) {
