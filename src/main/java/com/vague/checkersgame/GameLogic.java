@@ -12,12 +12,20 @@ public class GameLogic {
     // True when the last move was a jump, so we can check for a chain capture.
     private boolean lastMoveWasJump = false;
 
-    //Current Player
-    //Alternate Turns
-    //Starting Player Red
+    // Current Player
+    // Alternate Turns
+    // Starting Player Red
     private int currentPlayer = 1;
+
+    // Counts only successful moves
+    private int moveCount = 0;
+
     private void switchTurn() {
         currentPlayer = (currentPlayer == 0) ? 1 : 0;
+    }
+
+    public int getMoveCount() {
+        return moveCount;
     }
 
     // Create the starting pieces and place them on the board.
@@ -61,8 +69,6 @@ public class GameLogic {
             return;
         }
 
-
-
         Piece clickedPiece = pieces[row][col];
 
         if (selectedPiece == null) {
@@ -77,8 +83,7 @@ public class GameLogic {
             if (currentPlayer == 1 && selectedPiece.getColor() == 0) {
                 selectedPiece = clickedPiece;
                 return;
-            }
-            else if (currentPlayer == 0 && selectedPiece.getColor() == 1) {
+            } else if (currentPlayer == 0 && selectedPiece.getColor() == 1) {
                 selectedPiece = clickedPiece;
                 return;
             }
@@ -95,21 +100,15 @@ public class GameLogic {
         else if ((row % 2 == 0) && (col % 2 == 0)) {
             selectedPiece = clickedPiece;
             return;
-        }
-        else if ((row % 2 == 1) && (col % 2 == 1)) {
+        } else if ((row % 2 == 1) && (col % 2 == 1)) {
             selectedPiece = clickedPiece;
             return;
         }
 
-
-       /* if (!isValidJumpMove(selectedPiece,row,col)){
-            return;
-        }*/
-        //Only allow a one-square diagonal move in the correct direction.
-        else if (!isValidMove(selectedPiece, row, col,board)) {
+        // Only allow a one-square diagonal move in the correct direction.
+        else if (!isValidMove(selectedPiece, row, col, board)) {
             return;
         }
-
 
         // Remember whether this move was a jump before moveSelectedPiece clears selectedPiece.
         boolean wasJump = lastMoveWasJump;
@@ -125,8 +124,8 @@ public class GameLogic {
             return;
         }
 
-        //Player Turn Label
-        //Switch After Moving Piece
+        // Player Turn Label
+        // Switch After Moving Piece
         lastMoveWasJump = false;
         switchTurn();
         updateTurnLabel(board);
@@ -157,7 +156,8 @@ public class GameLogic {
         }
         return false;
     } */
-    private boolean isValidMove(Piece piece, int newRow, int newCol,Board board) {
+
+    private boolean isValidMove(Piece piece, int newRow, int newCol, Board board) {
         if (piece == null) {
             return false;
         }
@@ -169,38 +169,39 @@ public class GameLogic {
         int colDifference = newCol - oldCol;
 
         if (Math.abs(colDifference) != 1) {
-            if (Math.abs(colDifference)==2){
-                if (piece.getColor()==0){
+            if (Math.abs(colDifference) == 2) {
+                if (piece.getColor() == 0) {
                     // jumping right: land at oldCol+2, capture at oldCol+1
-                    if (newCol == oldCol+2 && oldCol+1 < board.size && pieces[oldRow+1][oldCol+1]!=null && pieces[oldRow+1][oldCol+1].getColor()!=0){
-                        removePiece(oldRow+1,oldCol+1,board);
+                    if (newCol == oldCol + 2 && oldCol + 1 < board.size && pieces[oldRow + 1][oldCol + 1] != null && pieces[oldRow + 1][oldCol + 1].getColor() != 0) {
+                        removePiece(oldRow + 1, oldCol + 1, board);
                         lastMoveWasJump = true;
-                        return rowDifference==2;
+                        return rowDifference == 2;
                     }
                     // jumping left: land at oldCol-2, capture at oldCol-1
-                    if (newCol == oldCol-2 && oldCol-1 >= 0 && pieces[oldRow+1][oldCol-1]!=null && pieces[oldRow+1][oldCol-1].getColor()!=0) {
-                        removePiece(oldRow+1,oldCol-1,board);
+                    if (newCol == oldCol - 2 && oldCol - 1 >= 0 && pieces[oldRow + 1][oldCol - 1] != null && pieces[oldRow + 1][oldCol - 1].getColor() != 0) {
+                        removePiece(oldRow + 1, oldCol - 1, board);
                         lastMoveWasJump = true;
-                        return rowDifference==2;
+                        return rowDifference == 2;
                     }
-                } else if (piece.getColor()==1) {
+                } else if (piece.getColor() == 1) {
                     // jumping right: land at oldCol+2, capture at oldCol+1
-                    if (newCol == oldCol+2 && oldCol+1 < board.size && pieces[oldRow-1][oldCol+1]!=null && pieces[oldRow-1][oldCol+1].getColor()!=1) {
-                        removePiece(oldRow-1,oldCol+1,board);
+                    if (newCol == oldCol + 2 && oldCol + 1 < board.size && pieces[oldRow - 1][oldCol + 1] != null && pieces[oldRow - 1][oldCol + 1].getColor() != 1) {
+                        removePiece(oldRow - 1, oldCol + 1, board);
                         lastMoveWasJump = true;
-                        return rowDifference==-2;
+                        return rowDifference == -2;
                     }
                     // jumping left: land at oldCol-2, capture at oldCol-1
-                    if (newCol == oldCol-2 && oldCol-1 >= 0 && pieces[oldRow-1][oldCol-1]!=null && pieces[oldRow-1][oldCol-1].getColor()!=1) {
-                        removePiece(oldRow-1,oldCol-1,board);
+                    if (newCol == oldCol - 2 && oldCol - 1 >= 0 && pieces[oldRow - 1][oldCol - 1] != null && pieces[oldRow - 1][oldCol - 1].getColor() != 1) {
+                        removePiece(oldRow - 1, oldCol - 1, board);
                         lastMoveWasJump = true;
-                        return rowDifference==-2;
+                        return rowDifference == -2;
                     }
                 }
-            }else {
-                return false;}
-
+            } else {
+                return false;
+            }
         }
+
         lastMoveWasJump = false;
 
         if (piece.getColor() == 0) {
@@ -214,7 +215,7 @@ public class GameLogic {
         return false;
     }
 
-    //Update Turn Label
+    // Update Turn Label
     private void updateTurnLabel(Board board) {
         String playerText = (currentPlayer == 0) ? "Black" : "Red";
         board.updateTurnDisplay("Current Player: " + playerText);
@@ -229,8 +230,10 @@ public class GameLogic {
         int fwd = (color == 0) ? 1 : -1; // black moves down, red moves up
 
         // Check both diagonal jump targets in the forward direction.
-        int[][] jumps = {{r + fwd, c + 1, r + 2 * fwd, c + 2},
-                {r + fwd, c - 1, r + 2 * fwd, c - 2}};
+        int[][] jumps = {
+                {r + fwd, c + 1, r + 2 * fwd, c + 2},
+                {r + fwd, c - 1, r + 2 * fwd, c - 2}
+        };
 
         for (int[] j : jumps) {
             int midRow = j[0], midCol = j[1], landRow = j[2], landCol = j[3];
@@ -249,11 +252,12 @@ public class GameLogic {
         return false;
     }
 
-    //Reset Button Logic
+    // Reset Button Logic
     public Piece[][] resetGame(Board board) {
         selectedPiece = null;
         currentPlayer = 1;
         lastMoveWasJump = false;
+        moveCount = 0;
         return createPieces(board);
     }
 
@@ -271,10 +275,12 @@ public class GameLogic {
         selectedPiece.setCoords(newRow, newCol);
         pieces[newRow][newCol] = selectedPiece;
         selectedPiece = null;
-    }
-    private void removePiece(int row,int col, Board board){
-        board.removePiece(pieces[row][col]);
-        pieces[row][col]=null;
 
+        moveCount++;
+    }
+
+    private void removePiece(int row, int col, Board board) {
+        board.removePiece(pieces[row][col]);
+        pieces[row][col] = null;
     }
 }
