@@ -115,6 +115,16 @@ public class GameLogic {
         Piece movedPiece = selectedPiece;
 
         moveSelectedPiece(row, col);
+
+        // King promotion: red reaches row 0, black reaches row 7.
+        if (movedPiece.getIsKing() == 0) {
+            if (movedPiece.getColor() == 1 && row == 0) {
+                movedPiece.setIsKing(1);
+            } else if (movedPiece.getColor() == 0 && row == board.size - 1) {
+                movedPiece.setIsKing(1);
+            }
+        }
+
         board.redrawPieces(pieces);
 
         // If the move was a jump, check whether the same piece can jump again.
@@ -127,6 +137,19 @@ public class GameLogic {
         // Player Turn Label
         // Switch After Moving Piece
         lastMoveWasJump = false;
+
+        // Check win condition before switching turn.
+        if (countPieces(0) == 0) {
+            board.updateTurnDisplay("Red wins!");
+            pieces = null; // freeze the game
+            return;
+        }
+        if (countPieces(1) == 0) {
+            board.updateTurnDisplay("Black wins!");
+            pieces = null; // freeze the game
+            return;
+        }
+
         switchTurn();
         updateTurnLabel(board);
     }
@@ -170,31 +193,25 @@ public class GameLogic {
 
         if (Math.abs(colDifference) != 1) {
             if (Math.abs(colDifference) == 2) {
-                if (piece.getColor() == 0) {
-                    // jumping right: land at oldCol+2, capture at oldCol+1
-                    if (newCol == oldCol + 2 && oldCol + 1 < board.size && pieces[oldRow + 1][oldCol + 1] != null && pieces[oldRow + 1][oldCol + 1].getColor() != 0) {
-                        removePiece(oldRow + 1, oldCol + 1, board);
-                        lastMoveWasJump = true;
-                        return rowDifference == 2;
-                    }
-                    // jumping left: land at oldCol-2, capture at oldCol-1
-                    if (newCol == oldCol - 2 && oldCol - 1 >= 0 && pieces[oldRow + 1][oldCol - 1] != null && pieces[oldRow + 1][oldCol - 1].getColor() != 0) {
-                        removePiece(oldRow + 1, oldCol - 1, board);
-                        lastMoveWasJump = true;
-                        return rowDifference == 2;
-                    }
-                } else if (piece.getColor() == 1) {
-                    // jumping right: land at oldCol+2, capture at oldCol+1
-                    if (newCol == oldCol + 2 && oldCol + 1 < board.size && pieces[oldRow - 1][oldCol + 1] != null && pieces[oldRow - 1][oldCol + 1].getColor() != 1) {
-                        removePiece(oldRow - 1, oldCol + 1, board);
-                        lastMoveWasJump = true;
-                        return rowDifference == -2;
-                    }
-                    // jumping left: land at oldCol-2, capture at oldCol-1
-                    if (newCol == oldCol - 2 && oldCol - 1 >= 0 && pieces[oldRow - 1][oldCol - 1] != null && pieces[oldRow - 1][oldCol - 1].getColor() != 1) {
-                        removePiece(oldRow - 1, oldCol - 1, board);
-                        lastMoveWasJump = true;
-                        return rowDifference == -2;
+                int midRow = oldRow + (rowDifference / 2);
+                int midCol = oldCol + (colDifference / 2);
+                if (midRow >= 0 && midRow < board.size && midCol >= 0 && midCol < board.size) {
+                    Piece middle = pieces[midRow][midCol];
+                    if (middle != null && middle.getColor() != piece.getColor()) {
+                        // Normal pieces: only jump forward. Kings: any diagonal.
+                        boolean directionOk;
+                        if (piece.getIsKing() == 1) {
+                            directionOk = true;
+                        } else if (piece.getColor() == 0) {
+                            directionOk = rowDifference == 2;
+                        } else {
+                            directionOk = rowDifference == -2;
+                        }
+                        if (directionOk) {
+                            removePiece(midRow, midCol, board);
+                            lastMoveWasJump = true;
+                            return true;
+                        }
                     }
                 }
             } else {
@@ -205,14 +222,25 @@ public class GameLogic {
         lastMoveWasJump = false;
 
         if (piece.getColor() == 0) {
-            return rowDifference == 1;
+            return rowDifference == 1 || (piece.getIsKing() == 1 && rowDifference == -1);
         }
 
         if (piece.getColor() == 1) {
-            return rowDifference == -1;
+            return rowDifference == -1 || (piece.getIsKing() == 1 && rowDifference == 1);
         }
 
         return false;
+    }
+
+    // Count how many pieces of a given color are still on the board.
+    private int countPieces(int color) {
+        int count = 0;
+        for (Piece[] row : pieces) {
+            for (Piece p : row) {
+                if (p != null && p.getColor() == color) count++;
+            }
+        }
+        return count;
     }
 
     // Update Turn Label
@@ -227,26 +255,27 @@ public class GameLogic {
         int r = piece.getRow();
         int c = piece.getCol();
         int color = piece.getColor();
-        int fwd = (color == 0) ? 1 : -1; // black moves down, red moves up
 
-        // Check both diagonal jump targets in the forward direction.
-        int[][] jumps = {
-                {r + fwd, c + 1, r + 2 * fwd, c + 2},
-                {r + fwd, c - 1, r + 2 * fwd, c - 2}
-        };
+        // Kings check all 4 diagonals; normal pieces check only their forward direction.
+        int[] directions = (piece.getIsKing() == 1) ? new int[]{1, -1} :
+                new int[]{(color == 0) ? 1 : -1};
 
-        for (int[] j : jumps) {
-            int midRow = j[0], midCol = j[1], landRow = j[2], landCol = j[3];
-            if (midRow < 0 || midRow >= board.size) continue;
-            if (midCol < 0 || midCol >= board.size) continue;
-            if (landRow < 0 || landRow >= board.size) continue;
-            if (landCol < 0 || landCol >= board.size) continue;
+        for (int fwd : directions) {
+            int[][] jumps = {{r + fwd, c + 1, r + 2 * fwd, c + 2},
+                    {r + fwd, c - 1, r + 2 * fwd, c - 2}};
+            for (int[] j : jumps) {
+                int midRow = j[0], midCol = j[1], landRow = j[2], landCol = j[3];
+                if (midRow < 0 || midRow >= board.size) continue;
+                if (midCol < 0 || midCol >= board.size) continue;
+                if (landRow < 0 || landRow >= board.size) continue;
+                if (landCol < 0 || landCol >= board.size) continue;
 
-            Piece middle = pieces[midRow][midCol];
-            Piece landing = pieces[landRow][landCol];
+                Piece middle = pieces[midRow][midCol];
+                Piece landing = pieces[landRow][landCol];
 
-            if (middle != null && middle.getColor() != color && landing == null) {
-                return true;
+                if (middle != null && middle.getColor() != color && landing == null) {
+                    return true;
+                }
             }
         }
         return false;
