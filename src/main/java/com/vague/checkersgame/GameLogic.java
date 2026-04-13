@@ -9,6 +9,9 @@ public class GameLogic {
     // The next click is where that piece should move.
     private Piece selectedPiece;
 
+    // True when the last move was a jump, so we can check for a chain capture.
+    private boolean lastMoveWasJump = false;
+
     //Current Player
     //Alternate Turns
     //Starting Player Red
@@ -69,13 +72,16 @@ public class GameLogic {
             return;
         }
 
-        if (currentPlayer == 1 && selectedPiece.getColor() == 0) {
-            selectedPiece = clickedPiece;
-            return;
-        }
-        else if (currentPlayer == 0 && selectedPiece.getColor() == 1) {
-            selectedPiece = clickedPiece;
-            return;
+        // During a chain jump the piece is already locked in — skip the turn guard.
+        if (!lastMoveWasJump) {
+            if (currentPlayer == 1 && selectedPiece.getColor() == 0) {
+                selectedPiece = clickedPiece;
+                return;
+            }
+            else if (currentPlayer == 0 && selectedPiece.getColor() == 1) {
+                selectedPiece = clickedPiece;
+                return;
+            }
         }
 
         // Do not move onto an occupied square.
@@ -99,17 +105,29 @@ public class GameLogic {
        /* if (!isValidJumpMove(selectedPiece,row,col)){
             return;
         }*/
-         //Only allow a one-square diagonal move in the correct direction.
+        //Only allow a one-square diagonal move in the correct direction.
         else if (!isValidMove(selectedPiece, row, col,board)) {
-         return;
+            return;
         }
 
+
+        // Remember whether this move was a jump before moveSelectedPiece clears selectedPiece.
+        boolean wasJump = lastMoveWasJump;
+        Piece movedPiece = selectedPiece;
 
         moveSelectedPiece(row, col);
         board.redrawPieces(pieces);
 
+        // If the move was a jump, check whether the same piece can jump again.
+        // If it can, keep it selected and let the current player go again.
+        if (wasJump && canJumpAgain(movedPiece, board)) {
+            selectedPiece = movedPiece;
+            return;
+        }
+
         //Player Turn Label
         //Switch After Moving Piece
+        lastMoveWasJump = false;
         switchTurn();
         updateTurnLabel(board);
     }
@@ -153,30 +171,40 @@ public class GameLogic {
         if (Math.abs(colDifference) != 1) {
             if (Math.abs(colDifference)==2){
                 if (piece.getColor()==0){
-                    if (oldCol+2<= board.size&&pieces[oldRow+1][oldCol+1]!=null&&pieces[oldRow+1][oldCol+1].getColor()!=0){
+                    // jumping right: land at oldCol+2, capture at oldCol+1
+                    if (newCol == oldCol+2 && oldCol+1 < board.size && pieces[oldRow+1][oldCol+1]!=null && pieces[oldRow+1][oldCol+1].getColor()!=0){
                         removePiece(oldRow+1,oldCol+1,board);
+                        lastMoveWasJump = true;
                         return rowDifference==2;
                     }
-                    if (oldCol-1>=0&&pieces[oldRow+1][oldCol-1]!=null&&pieces[oldRow+1][oldCol-1].getColor()!=0) {
+                    // jumping left: land at oldCol-2, capture at oldCol-1
+                    if (newCol == oldCol-2 && oldCol-1 >= 0 && pieces[oldRow+1][oldCol-1]!=null && pieces[oldRow+1][oldCol-1].getColor()!=0) {
                         removePiece(oldRow+1,oldCol-1,board);
+                        lastMoveWasJump = true;
                         return rowDifference==2;
                     }
                 } else if (piece.getColor()==1) {
-                    if (oldCol+2<= board.size&&pieces[oldRow-1][oldCol+1]!=null&&pieces[oldRow-1][oldCol+1].getColor()!=1) {
+                    // jumping right: land at oldCol+2, capture at oldCol+1
+                    if (newCol == oldCol+2 && oldCol+1 < board.size && pieces[oldRow-1][oldCol+1]!=null && pieces[oldRow-1][oldCol+1].getColor()!=1) {
                         removePiece(oldRow-1,oldCol+1,board);
+                        lastMoveWasJump = true;
                         return rowDifference==-2;
-                    } if (oldCol-1>=0&&pieces[oldRow-1][oldCol-1]!=null&&pieces[oldRow-1][oldCol-1].getColor()!=1) {
+                    }
+                    // jumping left: land at oldCol-2, capture at oldCol-1
+                    if (newCol == oldCol-2 && oldCol-1 >= 0 && pieces[oldRow-1][oldCol-1]!=null && pieces[oldRow-1][oldCol-1].getColor()!=1) {
                         removePiece(oldRow-1,oldCol-1,board);
+                        lastMoveWasJump = true;
                         return rowDifference==-2;
                     }
                 }
             }else {
-            return false;}
+                return false;}
 
         }
+        lastMoveWasJump = false;
 
         if (piece.getColor() == 0) {
-                return rowDifference == 1;
+            return rowDifference == 1;
         }
 
         if (piece.getColor() == 1) {
@@ -192,10 +220,40 @@ public class GameLogic {
         board.updateTurnDisplay("Current Player: " + playerText);
     }
 
+    // Check whether a piece that just jumped can jump again from its current position.
+    private boolean canJumpAgain(Piece piece, Board board) {
+        if (piece == null) return false;
+        int r = piece.getRow();
+        int c = piece.getCol();
+        int color = piece.getColor();
+        int fwd = (color == 0) ? 1 : -1; // black moves down, red moves up
+
+        // Check both diagonal jump targets in the forward direction.
+        int[][] jumps = {{r + fwd, c + 1, r + 2 * fwd, c + 2},
+                {r + fwd, c - 1, r + 2 * fwd, c - 2}};
+
+        for (int[] j : jumps) {
+            int midRow = j[0], midCol = j[1], landRow = j[2], landCol = j[3];
+            if (midRow < 0 || midRow >= board.size) continue;
+            if (midCol < 0 || midCol >= board.size) continue;
+            if (landRow < 0 || landRow >= board.size) continue;
+            if (landCol < 0 || landCol >= board.size) continue;
+
+            Piece middle = pieces[midRow][midCol];
+            Piece landing = pieces[landRow][landCol];
+
+            if (middle != null && middle.getColor() != color && landing == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //Reset Button Logic
     public Piece[][] resetGame(Board board) {
         selectedPiece = null;
         currentPlayer = 1;
+        lastMoveWasJump = false;
         return createPieces(board);
     }
 
