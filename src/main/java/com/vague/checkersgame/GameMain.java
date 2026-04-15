@@ -47,9 +47,9 @@ public class GameMain extends Application {
         statusLabel      = new Label("Status: Game Ready");
         moveCounterLabel = new Label("Moves: 0");
 
-        // Mode selector — determines whether AI is active and its strength
+        // Mode selector
         ComboBox<String> modeBox = new ComboBox<>();
-        modeBox.getItems().addAll("2 Player", "vs AI (Easy)", "vs AI (Medium)", "vs AI (Hard)");
+        modeBox.getItems().addAll("2 Player", "vs AI");
         modeBox.setValue("2 Player");
         modeBox.setStyle("-fx-font-weight: bold;");
 
@@ -104,12 +104,7 @@ public class GameMain extends Application {
     // ── AI ────────────────────────────────────────────────────────────────────
 
     private CheckersAI buildAI(String mode) {
-        switch (mode) {
-            case "vs AI (Easy)":   return new CheckersAI(CheckersAI.Difficulty.EASY);
-            case "vs AI (Medium)": return new CheckersAI(CheckersAI.Difficulty.MEDIUM);
-            case "vs AI (Hard)":   return new CheckersAI(CheckersAI.Difficulty.HARD);
-            default:               return null;
-        }
+        return mode.equals("vs AI") ? new CheckersAI() : null;
     }
 
     /**

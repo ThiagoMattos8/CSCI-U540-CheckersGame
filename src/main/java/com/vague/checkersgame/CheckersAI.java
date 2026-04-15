@@ -20,8 +20,6 @@ public class CheckersAI {
 
     // ── Public API ──────────────────────────────────────────────────────────
 
-    public enum Difficulty { EASY, MEDIUM, HARD }
-
     /**
      * A single move: one piece moves from (fromRow,fromCol) to (toRow,toCol).
      * For chain jumps the AI returns moves one hop at a time and GameMain
@@ -35,17 +33,11 @@ public class CheckersAI {
         }
     }
 
-    private final int depth;
+    private static final int DEPTH       = 4;
     private static final int AI_COLOR    = 0; // black
     private static final int HUMAN_COLOR = 1; // red
 
-    public CheckersAI(Difficulty difficulty) {
-        switch (difficulty) {
-            case EASY:   this.depth = 2; break;
-            case MEDIUM: this.depth = 4; break;
-            default:     this.depth = 6; break; // HARD
-        }
-    }
+    public CheckersAI() {}
 
     /**
      * Given the current board, return the best move for the AI (Black).
@@ -69,7 +61,7 @@ public class CheckersAI {
 
         for (Move move : allMoves) {
             Piece[][] next = applyMove(copy, move);
-            int score = minimax(next, depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+            int score = minimax(next, DEPTH - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove  = move;
