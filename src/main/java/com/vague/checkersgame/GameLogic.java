@@ -28,6 +28,11 @@ public class GameLogic {
         return moveCount;
     }
 
+    /** Gives the AI read access to the live board state. */
+    public Piece[][] getPieces() {
+        return pieces;
+    }
+
     public boolean isGameOver() {
         return gameOverMessage != null;
     }
