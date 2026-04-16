@@ -11,11 +11,8 @@ import java.util.List;
  * All logic operates on plain Piece[][] snapshots — no Board/JavaFX involved,
  * so it never touches the real game state during search.
  *
- * Difficulty levels control search depth:
- *   EASY   → depth 2
- *   MEDIUM → depth 4
- *   HARD   → depth 6
- */
+ **/
+
 public class CheckersAI {
 
     // ── Public API ──────────────────────────────────────────────────────────
